@@ -25,6 +25,7 @@ function onFormSubmit(event) {
 function onEmailInput(event) {
   const email = event.target.value;
   localStorage.setItem(KEY_LOCAL_EMAIL, email);
+  localStorage.removeItem(KEY_LOCAL_EMAIL);
 }
 
 function onMessageInput(event) {
