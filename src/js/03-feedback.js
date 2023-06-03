@@ -20,7 +20,7 @@ function onFormSubmit(event) {
     message: messageTextarea.value
   };
 
-  console.log(formData); // Виводимо об'єкт з полями email та message
+  console.log(formData);
 
   resetForm();
   clearLocalStorage();
