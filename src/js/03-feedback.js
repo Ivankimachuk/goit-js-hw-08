@@ -17,20 +17,29 @@ dataFromLocalStorage();
 
 function onFormSubmit(event) {
   event.preventDefault();
+
+  const resultForm = {
+    email: refs.emailInput.value,
+    message: refs.textarea.value
+  };
+  console.log(resultForm);
  
   event.target.reset();
   localStorage.removeItem(KEY_LOCAL);
+  localStorage.removeItem(KEY_LOCAL_EMAIL);
+
+ 
 }
 
 function onEmailInput(event) {
   const email = event.target.value;
-  localStorage.setItem(KEY_LOCAL_EMAIL, email);
-  localStorage.removeItem(KEY_LOCAL_EMAIL);
+  localStorage.setItem(KEY_LOCAL_EMAIL, JSON.stringify(email));
+  
 }
 
 function onMessageInput(event) {
   const message = event.target.value;
-  localStorage.setItem(KEY_LOCAL, message);
+  localStorage.setItem(KEY_LOCAL, JSON.stringify(message)); 
 }
 
 function dataFromLocalStorage() {
