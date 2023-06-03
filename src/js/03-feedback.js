@@ -1,56 +1,67 @@
 import throttle from 'lodash.throttle';
 
 const KEY_LOCAL = 'feedback-form-state';
-const KEY_LOCAL_EMAIL = 'feedback-form-state-email';
 
-const refs = {
-  form: document.querySelector('.feedback-form'),
-  emailInput: document.querySelector('.feedback-form input[name="email"]'),
-  textarea: document.querySelector('.feedback-form textarea[name="message"]')
-};
+const form = document.querySelector('.feedback-form');
+const emailInput = form.querySelector('input[name="email"]');
+const messageTextarea = form.querySelector('textarea[name="message"]');
 
-refs.form.addEventListener('submit', onFormSubmit);
-refs.emailInput.addEventListener('input', throttle(onEmailInput, 500));
-refs.textarea.addEventListener('input', throttle(onMessageInput, 500));
+form.addEventListener('submit', onFormSubmit);
+emailInput.addEventListener('input', throttle(onInputChange, 500));
+messageTextarea.addEventListener('input', throttle(onInputChange, 500));
 
-dataFromLocalStorage();
+loadFormData();
 
 function onFormSubmit(event) {
   event.preventDefault();
 
-  const resultForm = {
-    email: refs.emailInput.value,
-    message: refs.textarea.value
+  const formData = {
+    email: emailInput.value,
+    message: messageTextarea.value
   };
-  console.log(resultForm);
- 
-  event.target.reset();
+
+  console.log(formData); // Виводимо об'єкт з полями email та message
+
+  resetForm();
+  clearLocalStorage();
+}
+
+function onInputChange() {
+  const formData = {
+    email: emailInput.value,
+    message: messageTextarea.value
+  };
+
+  saveFormData(formData);
+}
+
+function loadFormData() {
+  const formData = getFormDataFromLocalStorage();
+
+  if (formData) {
+    emailInput.value = formData.email;
+    messageTextarea.value = formData.message;
+  }
+}
+
+function saveFormData(formData) {
+  localStorage.setItem(KEY_LOCAL, JSON.stringify(formData));
+}
+
+function getFormDataFromLocalStorage() {
+  const formDataString = localStorage.getItem(KEY_LOCAL);
+
+  if (formDataString) {
+    return JSON.parse(formDataString);
+  }
+
+  return null;
+}
+
+function resetForm() {
+  form.reset();
+}
+
+function clearLocalStorage() {
   localStorage.removeItem(KEY_LOCAL);
-  localStorage.removeItem(KEY_LOCAL_EMAIL);
-
- 
-}
-
-function onEmailInput(event) {
-  const email = event.target.value;
-  localStorage.setItem(KEY_LOCAL_EMAIL, JSON.stringify(email));
-  
-}
-
-function onMessageInput(event) {
-  const message = event.target.value;
-  localStorage.setItem(KEY_LOCAL, JSON.stringify(message)); 
-}
-
-function dataFromLocalStorage() {
-  const emailLocalSt = localStorage.getItem(KEY_LOCAL_EMAIL);
-  const messageLocalSt = localStorage.getItem(KEY_LOCAL);
-
-  if (emailLocalSt) {
-    refs.emailInput.value = emailLocalSt;
-  }
-
-  if (messageLocalSt) {
-    refs.textarea.value = messageLocalSt;
-  }
 }
